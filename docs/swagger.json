@@ -1,0 +1,147 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "title": "Crud Service API",
+        "contact": {}
+    },
+    "paths": {
+        "/items": {
+            "get": {
+                "description": "Retorna todos os itens na base de dados.",
+                "produces": [
+                    "application/json"
+                ],
+                "summary": "Obter todos os itens",
+                "responses": {
+                    "200": {
+                        "description": "OK",
+                        "schema": {
+                            "type": "array",
+                            "items": {
+                                "$ref": "#/definitions/models.Item"
+                            }
+                        }
+                    }
+                }
+            },
+            "post": {
+                "description": "Cria um novo item com as informações fornecidas.",
+                "summary": "Cria um novo item",
+                "parameters": [
+                    {
+                        "example": "{\"name\": \"Novo item\"}",
+                        "description": "Nome do item",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Item criado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/models.Item"
+                        }
+                    }
+                }
+            }
+        },
+        "/items/{id}": {
+            "get": {
+                "description": "Retorna o item com o ID especificado.",
+                "summary": "Pega um item pelo ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do item",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item retornado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/models.Item"
+                        }
+                    }
+                }
+            },
+            "put": {
+                "description": "Atualiza um item com o ID especificado.",
+                "summary": "Atualiza um item pelo ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do item",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    },
+                    {
+                        "example": "{\"name\": \"Trocar o nome\"}",
+                        "description": "Nome do item",
+                        "name": "name",
+                        "in": "body",
+                        "required": true,
+                        "schema": {
+                            "type": "string"
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Item atualizado com sucesso",
+                        "schema": {
+                            "$ref": "#/definitions/models.Item"
+                        }
+                    }
+                }
+            },
+            "delete": {
+                "description": "Remove um item com o ID especificado.",
+                "summary": "Deleta um item pelo ID",
+                "parameters": [
+                    {
+                        "type": "string",
+                        "description": "ID do item",
+                        "name": "id",
+                        "in": "path",
+                        "required": true
+                    }
+                ],
+                "responses": {
+                    "204": {
+                        "description": "Item removido com sucesso"
+                    }
+                }
+            }
+        }
+    },
+    "definitions": {
+        "models.Item": {
+            "type": "object",
+            "properties": {
+                "created_at": {
+                    "type": "string"
+                },
+                "deleted_at": {
+                    "type": "string"
+                },
+                "id": {
+                    "type": "string"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "updated_at": {
+                    "type": "string"
+                }
+            }
+        }
+    }
+}

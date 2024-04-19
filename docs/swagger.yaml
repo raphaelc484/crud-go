@@ -1,0 +1,96 @@
+definitions:
+  models.Item:
+    properties:
+      created_at:
+        type: string
+      deleted_at:
+        type: string
+      id:
+        type: string
+      name:
+        type: string
+      updated_at:
+        type: string
+    type: object
+info:
+  contact: {}
+  title: Crud Service API
+paths:
+  /items:
+    get:
+      description: Retorna todos os itens na base de dados.
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            items:
+              $ref: '#/definitions/models.Item'
+            type: array
+      summary: Obter todos os itens
+    post:
+      description: Cria um novo item com as informações fornecidas.
+      parameters:
+      - description: Nome do item
+        example: '{"name": "Novo item"}'
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        "201":
+          description: Item criado com sucesso
+          schema:
+            $ref: '#/definitions/models.Item'
+      summary: Cria um novo item
+  /items/{id}:
+    delete:
+      description: Remove um item com o ID especificado.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "204":
+          description: Item removido com sucesso
+      summary: Deleta um item pelo ID
+    get:
+      description: Retorna o item com o ID especificado.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: string
+      responses:
+        "200":
+          description: Item retornado com sucesso
+          schema:
+            $ref: '#/definitions/models.Item'
+      summary: Pega um item pelo ID
+    put:
+      description: Atualiza um item com o ID especificado.
+      parameters:
+      - description: ID do item
+        in: path
+        name: id
+        required: true
+        type: string
+      - description: Nome do item
+        example: '{"name": "Trocar o nome"}'
+        in: body
+        name: name
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: Item atualizado com sucesso
+          schema:
+            $ref: '#/definitions/models.Item'
+      summary: Atualiza um item pelo ID
+swagger: "2.0"
