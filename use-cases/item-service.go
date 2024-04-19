@@ -28,16 +28,13 @@ func (s *itemService) GetItemByID(id uuid.UUID) (*models.Item, error) {
 }
 
 func (s *itemService) UpdateItem(id uuid.UUID, updatedItem *models.Item) (*models.Item, error) {
-	// Obter o item existente pelo ID
 	existingItem, err := s.repo.GetItemByID(id)
 	if err != nil {
 		return nil, err
 	}
 
-	// Atualizar o item existente com os dados do item atualizado
 	existingItem.Name = updatedItem.Name
 
-	// Salvar o item atualizado no repositório
 	err = s.repo.UpdateItem(existingItem)
 	if err != nil {
 		return nil, err
@@ -47,5 +44,10 @@ func (s *itemService) UpdateItem(id uuid.UUID, updatedItem *models.Item) (*model
 }
 
 func (s *itemService) DeleteItem(id uuid.UUID) error {
-	return s.repo.DeleteItem(id)
+	existingItem, err := s.repo.GetItemByID(id)
+	if err != nil {
+		return err
+	}
+
+	return s.repo.DeleteItem(existingItem)
 }

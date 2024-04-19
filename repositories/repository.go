@@ -11,5 +11,5 @@ type ItemRepository interface {
 	CreateItem(item *models.Item) error
 	GetItemByID(id uuid.UUID) (*models.Item, error)
 	UpdateItem(item *models.Item) error
-	DeleteItem(id uuid.UUID) error
+	DeleteItem(item *models.Item) error
 }

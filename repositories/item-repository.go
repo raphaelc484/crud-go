@@ -42,15 +42,7 @@ func (r *itemRepository) UpdateItem(item *models.Item) error {
 	return r.db.Save(item).Error
 }
 
-func (r *itemRepository) DeleteItem(id uuid.UUID) error {
-	var item models.Item
-	err := r.db.First(&item, "id = ?", id).Error
-	if err != nil {
-		return err
-	}
-	err = r.db.Delete(&item).Error
-	if err != nil {
-		return err
-	}
-	return nil
+func (r *itemRepository) DeleteItem(item *models.Item) error {
+	return r.db.Delete(&item).Error
+
 }

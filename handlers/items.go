@@ -36,14 +36,21 @@ func (h *ItemHandler) GetItems(c *gin.Context) {
 // @Success      201   {object}  models.Item  "Item criado com sucesso"
 // @Router       /items [post]
 func (h *ItemHandler) CreateItem(c *gin.Context) {
-	var item models.Item
-	err := c.ShouldBindJSON(&item)
+	var input models.ItemRequest
+	err := c.ShouldBindJSON(&input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	err = h.service.CreateItem(&item)
+	err = input.Validate()
+	if err != nil {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "É necessário preencher o campo"})
+		return
+	}
+
+	item := models.ToCreateItem(&input)
+	err = h.service.CreateItem(item)
 	if err != nil {
 		return
 	}
@@ -59,12 +66,12 @@ func (h *ItemHandler) GetItemByID(c *gin.Context) {
 	id := c.Param("id")
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid ID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Item inválido"})
 		return
 	}
 	item, err := h.service.GetItemByID(parsedID)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Item não encontrado"})
 		return
 	}
 	c.JSON(http.StatusOK, item)
@@ -80,20 +87,26 @@ func (h *ItemHandler) UpdateItem(c *gin.Context) {
 	id := c.Param("id")
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Item inválido"})
 		return
 	}
 
-	var updatedItem models.Item
-	err = c.ShouldBindJSON(&updatedItem)
+	var input models.ItemRequest
+	err = c.ShouldBindJSON(&input)
 	if err != nil {
 		c.JSON(http.StatusBadRequest, gin.H{"error": err.Error()})
 		return
 	}
 
-	item, err := h.service.UpdateItem(parsedID, &updatedItem)
+	if input.Name == "" {
+		c.JSON(http.StatusBadRequest, gin.H{"error": "É necessário preencher o campo"})
+		return
+	}
+
+	updatedItem := models.ToUpdateItem(parsedID, &input)
+	item, err := h.service.UpdateItem(parsedID, updatedItem)
 	if err != nil {
-		c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
+		c.JSON(http.StatusNotFound, gin.H{"error": "Item não encontrado"})
 		return
 	}
 
@@ -109,7 +122,7 @@ func (h *ItemHandler) DeleteItem(c *gin.Context) {
 	id := c.Param("id")
 	parsedID, err := uuid.Parse(id)
 	if err != nil {
-		c.JSON(http.StatusBadRequest, gin.H{"error": "Invalid UUID"})
+		c.JSON(http.StatusBadRequest, gin.H{"error": "Item inválido"})
 		return
 	}
 
@@ -118,7 +131,7 @@ func (h *ItemHandler) DeleteItem(c *gin.Context) {
 		if err.Error() == "record not found" {
 			c.JSON(http.StatusNotFound, gin.H{"error": "Item not found"})
 		} else {
-			c.JSON(http.StatusInternalServerError, gin.H{"error": "Failed to delete item"})
+			c.JSON(http.StatusInternalServerError, gin.H{"error": "Falha ao deletar o item"})
 		}
 		return
 	}
